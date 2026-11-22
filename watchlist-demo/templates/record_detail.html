@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Chi tiết bản ghi{% endblock %}
+{% block heading %}Chi tiết bản ghi {{ row.record_code }}{% endblock %}
+{% block content %}
+<div class="panel">
+    <table id="tbl-record-detail">
+        <tr><th>Mã bản ghi</th><td id="view-record_code">{{ row.record_code }}</td></tr>
+        <tr><th>Loại đối tượng</th><td id="view-subject_type">{{ row.subject_type }}</td></tr>
+        <tr><th>Họ và tên / Tên tổ chức</th><td id="view-fullname">{{ row.fullname }}</td></tr>
+        <tr><th>Số CCCD / Số ĐKKD (MST)</th><td id="view-id_number">{{ row.id_number or '' }}</td></tr>
+        <tr><th>Năm sinh</th><td id="view-birth_year">{{ row.birth_year or '' }}</td></tr>
+        <tr><th>Quốc tịch</th><td id="view-nationality">{{ row.nationality or '' }}</td></tr>
+        <tr><th>Lý do đưa vào danh sách</th><td id="view-reason">{{ row.reason or '' }}</td></tr>
+        <tr><th>Trạng thái hoạt động</th><td id="view-active_status">{{ row.active_status }}</td></tr>
+        <tr><th>Trạng thái duyệt</th><td id="view-auth_status">{{ row.auth_status }}</td></tr>
+        <tr><th>Người nhập</th><td id="view-created_by">{{ row.created_by }}</td></tr>
+        <tr><th>Ngày nhập</th><td id="view-created_at">{{ row.created_at }}</td></tr>
+        <tr><th>Người sửa</th><td id="view-updated_by">{{ row.updated_by or '' }}</td></tr>
+        <tr><th>Ngày sửa</th><td id="view-updated_at">{{ row.updated_at or '' }}</td></tr>
+        <tr><th>Người duyệt</th><td id="view-authorized_by">{{ row.authorized_by or '' }}</td></tr>
+        <tr><th>Ngày duyệt</th><td id="view-authorized_at">{{ row.authorized_at or '' }}</td></tr>
+        <tr><th>Đang có trong Watchlist</th><td id="view-in_watchlist">{% if in_watchlist %}Có{% else %}Không{% endif %}</td></tr>
+    </table>
+    <div class="toolbar">
+        <a id="btn-back" class="btn btn-light" href="{{ url_for('records') }}">Quay lại danh sách</a>
+    </div>
+</div>
+{% endblock %}

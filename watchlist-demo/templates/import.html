@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Import bản ghi{% endblock %}
+{% block heading %}Import bản ghi từ file .xlsx / .csv{% endblock %}
+{% block content %}
+<div class="panel">
+    <p>File phải có dòng tiêu đề đúng tên và đúng thứ tự cột:</p>
+    <table id="tbl-import-columns">
+        <tr>{% for c in import_columns %}<th>{{ c }}</th>{% endfor %}</tr>
+    </table>
+    <p>Tải file mẫu:
+        <a id="lnk-template-xlsx" href="{{ url_for('import_template_xlsx') }}">mau_import_watchlist.xlsx</a> |
+        <a id="lnk-template-csv" href="{{ url_for('import_template_csv') }}">mau_import_watchlist.csv</a>
+    </p>
+    <p>Nếu có ít nhất 1 dòng lỗi, toàn bộ file bị từ chối. Bản ghi import thành công có trạng thái <b>Unauthorized</b>.</p>
+
+    <form id="frm-import" method="post" action="{{ url_for('record_import') }}" enctype="multipart/form-data">
+        <div class="form-row">
+            <label for="import_file">Chọn file</label>
+            <input type="file" id="import_file" name="import_file">
+        </div>
+        <div class="toolbar">
+            <button type="submit" id="btn-import-submit" class="btn">Import</button>
+            <a id="btn-cancel" class="btn btn-light" href="{{ url_for('records') }}">Hủy</a>
+        </div>
+    </form>
+</div>
+
+<div class="panel"{% if not import_errors %} style="display:none"{% endif %}>
+    <h2 style="font-size:18px">Danh sách lỗi theo dòng</h2>
+    <table id="tbl-import-errors">
+        <thead><tr><th>Dòng</th><th>Nội dung lỗi</th></tr></thead>
+        <tbody id="tbl-import-errors-body">
+        {% for line_no, message in import_errors %}
+        <tr id="import-error-{{ loop.index }}"><td>{{ line_no }}</td><td>{{ message }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

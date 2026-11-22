@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Chi tiết Case{% endblock %}
+{% block heading %}Chi tiết Case {{ case.case_code }}{% endblock %}
+{% block content %}
+<div class="panel">
+    <h2 style="font-size:18px">Thông tin khách hàng sàng lọc</h2>
+    <table id="tbl-case-info">
+        <tr><th>Mã case</th><td id="case-code">{{ case.case_code }}</td></tr>
+        <tr><th>Trạng thái</th><td id="case-status">{{ case.status }}</td></tr>
+        <tr><th>Quyết định mở CIF</th><td id="case-cif-decision">{{ cif }}</td></tr>
+        <tr><th>Mã sàng lọc</th><td id="case-screening-code">{{ case.screening_code }}</td></tr>
+        <tr><th>Loại khách hàng</th><td id="case-customer-type">{{ case.customer_type }}</td></tr>
+        <tr><th>Khách hàng (Họ và tên / Tên tổ chức)</th><td id="case-fullname">{{ case.fullname }}</td></tr>
+        <tr><th>Số CCCD / Số ĐKKD (MST)</th><td id="case-id-number">{{ case.id_number or '' }}</td></tr>
+        <tr><th>Người tạo</th><td id="case-created-by">{{ case.created_by }}</td></tr>
+        <tr><th>Ngày tạo</th><td id="case-created-at">{{ case.created_at }}</td></tr>
+    </table>
+</div>
+
+<form id="frm-case-action" method="post" action="{{ url_for('case_action', code=case.case_code) }}">
+    <div class="panel">
+        <h2 style="font-size:18px">Danh sách Event</h2>
+        <table id="tbl-events">
+            <thead>
+            <tr><th>STT</th><th>Mã bản ghi Watchlist</th><th>Họ và tên / Tên tổ chức</th><th>Số CCCD / Số ĐKKD (MST)</th><th>Căn cứ trùng khớp</th><th>Đánh giá</th><th>Lý do</th></tr>
+            </thead>
+            <tbody id="tbl-events-body">
+            {% for item in event_items %}{% set e = item.e %}{% set n = e.event_no %}
+            <tr id="event-row-{{ n }}">
+                <td>{{ n }}</td>
+                <td id="event-code-{{ n }}">{{ e.record_code }}</td>
+                <td id="event-name-{{ n }}">{{ e.fullname }}</td>
+                <td id="event-idnum-{{ n }}">{{ e.id_number or '' }}</td>
+                <td id="event-match-{{ n }}">{{ e.match_reason }}</td>
+                <td>
+                    <select id="eval-{{ n }}" name="eval-{{ n }}"{% if not perms.maker_evaluate %} disabled{% endif %}>
+                        {% for v in evaluations %}
+                        <option value="{{ v }}"{% if item.evaluation == v %} selected{% endif %}>{{ v }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="text" id="reason-{{ n }}" name="reason-{{ n }}" value="{{ item.reason }}" style="width:260px"{% if not perms.maker_evaluate %} disabled{% endif %}></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel"{% if not (perms.maker_evaluate or perms.maker_supplement or perms.checker_decide) %} style="display:none"{% endif %}>
+        <h2 style="font-size:18px">Xử lý case</h2>
+        {% if perms.maker_supplement %}
+        <div class="form-row">
+            <label for="supplement_note">Nội dung bổ sung <span class="required">*</span></label>
+            <textarea id="supplement_note" name="supplement_note" rows="3">{{ supplement_note }}</textarea>
+        </div>
+        {% endif %}
+        {% if perms.checker_decide %}
+        <div class="form-row">
+            <label for="decision_reason">Lý do quyết định <span class="required">*</span></label>
+            <textarea id="decision_reason" name="decision_reason" rows="3">{{ decision_reason }}</textarea>
+        </div>
+        {% endif %}
+        <div class="toolbar">
+            {% if perms.maker_evaluate %}
+            <button type="submit" id="btn-propose" class="btn" name="action" value="propose">Đề xuất</button>
+            {% endif %}
+            {% if perms.maker_supplement %}
+            <button type="submit" id="btn-send-supplement" class="btn" name="action" value="send_supplement">Gửi bổ sung</button>
+            {% endif %}
+            {% if perms.checker_decide %}
+            <button type="submit" id="btn-request-supplement" class="btn btn-light" name="action" value="request_supplement">Yêu cầu bổ sung</button>
+            <button type="submit" id="btn-close-false-hit" class="btn" name="action" value="close_false_hit">Đóng - Hit sai</button>
+            <button type="submit" id="btn-close-terminate" class="btn btn-danger" name="action" value="close_terminate">Đóng - Chấm dứt quan hệ</button>
+            <button type="submit" id="btn-close-maintain" class="btn btn-success" name="action" value="close_maintain">Đóng - Duy trì có kiểm soát</button>
+            {% endif %}
+        </div>
+    </div>
+</form>
+<p id="case-readonly-note" class="msg msg-info"{% if perms.maker_evaluate or perms.maker_supplement or perms.checker_decide %} style="display:none"{% endif %}>Bạn chỉ được xem case này ở trạng thái hiện tại.</p>
+
+<div class="panel">
+    <h2 style="font-size:18px">Lịch sử xử lý</h2>
+    <table id="tbl-case-history">
+        <thead><tr><th>Thời gian</th><th>Người thực hiện</th><th>Hành động</th><th>Ghi chú</th></tr></thead>
+        <tbody id="tbl-case-history-body">
+        {% for h in history %}
+        <tr id="history-row-{{ loop.index }}">
+            <td>{{ h.acted_at }}</td>
+            <td>{{ h.actor }}</td>
+            <td>{{ h.action }}</td>
+            <td>{{ h.note or '' }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="toolbar"><a id="btn-back-cases" class="btn btn-light" href="{{ url_for('cases') }}">Quay lại Danh sách Case</a></div>
+{% endblock %}

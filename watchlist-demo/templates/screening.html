@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Sàng lọc khách hàng{% endblock %}
+{% block heading %}Sàng lọc khách hàng{% endblock %}
+{% block content %}
+{% set readonly = current_role != 'maker' %}
+<div class="panel">
+    <form id="frm-screening" method="post" action="{{ url_for('screening') }}" novalidate>
+        <div class="form-row">
+            <label for="customer_type">Loại khách hàng <span class="required">*</span></label>
+            <select id="customer_type" name="customer_type"{% if readonly %} disabled{% endif %}>
+                <option value=""{% if data.customer_type == '' %} selected{% endif %}>-- Chọn loại khách hàng --</option>
+                {% for t in customer_types %}
+                <option value="{{ t }}"{% if data.customer_type == t %} selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+            <span id="err-customer_type" class="field-error">{{ errors.get('customer_type', '') }}</span>
+        </div>
+        <div class="form-row">
+            <label id="lbl-fullname" for="fullname">Họ và tên <span class="required">*</span></label>
+            <input type="text" id="fullname" name="fullname" value="{{ data.fullname }}"{% if readonly %} disabled{% endif %}>
+            <span id="err-fullname" class="field-error">{{ errors.get('fullname', '') }}</span>
+        </div>
+        <div class="form-row">
+            <label id="lbl-id_number" for="id_number">Số CCCD</label>
+            <input type="text" id="id_number" name="id_number" value="{{ data.id_number }}"{% if readonly %} disabled{% endif %}>
+            <span id="err-id_number" class="field-error">{{ errors.get('id_number', '') }}</span>
+        </div>
+        <div class="toolbar">
+            <button type="submit" id="btn-screen" class="btn"{% if readonly %} disabled{% endif %}>Sàng lọc</button>
+        </div>
+        <p id="screening-readonly-note" class="msg msg-info"{% if not readonly %} style="display:none"{% endif %}>Chỉ Maker được thực hiện sàng lọc. Checker chỉ xem.</p>
+    </form>
+</div>
+
+<div id="screening-result" class="panel"{% if not result %} style="display:none"{% endif %}>
+    <h2 style="font-size:18px">Kết quả sàng lọc</h2>
+    <table id="tbl-screening-result">
+        <tr><th>Mã sàng lọc</th><td id="result-screening-code">{{ result.sc.screening_code if result else '' }}</td></tr>
+        <tr><th>Khách hàng</th><td id="result-fullname">{{ result.sc.fullname if result else '' }}</td></tr>
+        <tr><th>Loại khách hàng</th><td id="result-customer-type">{{ result.sc.customer_type if result else '' }}</td></tr>
+        <tr><th>Số CCCD / Số ĐKKD (MST)</th><td id="result-id-number">{{ (result.sc.id_number or '') if result else '' }}</td></tr>
+        <tr><th>Kết quả</th><td id="result-status">{{ result.sc.result if result else '' }}</td></tr>
+        <tr><th>Thông báo</th><td id="result-message">{% if result %}{% if result.sc.result == 'HIT' %}Phát hiện {{ result.events|length }} bản ghi trùng khớp với Watchlist{% else %}Không phát hiện trùng khớp với Watchlist{% endif %}{% endif %}</td></tr>
+        <tr><th>Mã case</th><td id="result-case-code">{% if result and result.sc.case_code %}<a id="lnk-result-case" href="{{ url_for('case_detail', code=result.sc.case_code) }}">{{ result.sc.case_code }}</a>{% endif %}</td></tr>
+        <tr><th>Quyết định mở CIF</th><td id="result-cif-decision">{{ result.cif if result else '' }}</td></tr>
+    </table>
+
+    <div{% if not result or not result.events %} style="display:none"{% endif %}>
+        <h3 style="font-size:16px">Các bản ghi Watchlist trùng khớp</h3>
+        <table id="tbl-screening-matches">
+            <thead><tr><th>Mã bản ghi</th><th>Họ và tên / Tên tổ chức</th><th>Số CCCD / Số ĐKKD (MST)</th><th>Căn cứ trùng khớp</th></tr></thead>
+            <tbody id="tbl-screening-matches-body">
+            {% if result %}{% for e in result.events %}
+            <tr id="match-row-{{ e.record_code }}">
+                <td>{{ e.record_code }}</td>
+                <td>{{ e.fullname }}</td>
+                <td>{{ e.id_number or '' }}</td>
+                <td>{{ e.match_reason }}</td>
+            </tr>
+            {% endfor %}{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+(function () {
+    var typeSel = document.getElementById("customer_type");
+    var lblName = document.getElementById("lbl-fullname");
+    var lblId = document.getElementById("lbl-id_number");
+    function sync() {
+        var org = typeSel.value === "Tổ chức";
+        lblName.firstChild.nodeValue = org ? "Tên tổ chức " : "Họ và tên ";
+        lblId.textContent = org ? "Số ĐKKD/MST" : "Số CCCD";
+    }
+    typeSel.addEventListener("change", sync);
+    sync();
+})();
+</script>
+{% endblock %}
+

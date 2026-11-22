@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Nhập liệu{% endblock %}
+{% block heading %}{% if current_role == 'maker' %}Nhập liệu - Danh sách bản ghi{% else %}Duyệt bản ghi - Danh sách bản ghi{% endif %}{% endblock %}
+{% block content %}
+<div class="panel">
+    <form id="frm-search" class="inline-form" method="get" action="{{ url_for('records') }}">
+        <label for="search_fullname">Họ và tên / Tên tổ chức</label>
+        <input type="text" id="search_fullname" name="search_fullname" value="{{ search_fullname }}">
+        <label for="search_id_number">Số CCCD / Số ĐKKD (MST)</label>
+        <input type="text" id="search_id_number" name="search_id_number" value="{{ search_id_number }}">
+        <label for="filter_auth_status">Trạng thái duyệt</label>
+        <select id="filter_auth_status" name="filter_auth_status">
+            <option value=""{% if filter_auth_status == '' %} selected{% endif %}>-- Tất cả --</option>
+            {% for s in auth_statuses %}
+            <option value="{{ s }}"{% if filter_auth_status == s %} selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" id="btn-search" class="btn">Tìm kiếm</button>
+        <a id="btn-clear-search" class="btn btn-light" href="{{ url_for('records') }}">Xóa điều kiện</a>
+    </form>
+</div>
+
+<form id="frm-records" method="post" action="{{ url_for('records') }}">
+    <div class="toolbar">
+        {% if current_role == 'maker' %}
+        <a id="btn-add" class="btn" href="{{ url_for('record_new') }}">Thêm mới</a>
+        <button type="submit" id="btn-edit" class="btn" formaction="{{ url_for('record_edit_selected') }}">Sửa</button>
+        <button type="submit" id="btn-delete" class="btn btn-danger" formaction="{{ url_for('record_delete') }}" onclick="return confirmDelete();">Xóa</button>
+        <a id="btn-import" class="btn btn-light" href="{{ url_for('record_import') }}">Import</a>
+        {% endif %}
+        {% if current_role == 'checker' %}
+        <button type="submit" id="btn-authorize" class="btn btn-success" formaction="{{ url_for('record_authorize') }}">Authorize</button>
+        <button type="submit" id="btn-reject" class="btn btn-danger" formaction="{{ url_for('record_reject') }}">Reject</button>
+        {% endif %}
+        <span id="record-count" style="align-self:center">Tổng số: {{ rows|length }} bản ghi</span>
+    </div>
+
+    <table id="tbl-records">
+        <thead>
+        <tr>
+            <th><input type="checkbox" id="chk-all" title="Chọn tất cả" onclick="toggleAll(this);"></th>
+            <th>Mã bản ghi</th>
+            <th>Loại đối tượng</th>
+            <th>Họ và tên / Tên tổ chức</th>
+            <th>Số CCCD / Số ĐKKD (MST)</th>
+            <th>Năm sinh</th>
+            <th>Quốc tịch</th>
+            <th>Trạng thái hoạt động</th>
+            <th>Trạng thái duyệt</th>
+            <th>Người nhập</th>
+            <th>Ngày nhập</th>
+            <th>Người duyệt</th>
+            <th>Ngày duyệt</th>
+        </tr>
+        </thead>
+        <tbody id="tbl-records-body">
+        {% for r in rows %}
+        <tr id="row-{{ r.record_code }}">
+            <td><input type="checkbox" id="chk-{{ r.record_code }}" name="selected_codes" value="{{ r.record_code }}"></td>
+            <td><a id="lnk-view-{{ r.record_code }}" href="{{ url_for('record_detail', code=r.record_code) }}">{{ r.record_code }}</a></td>
+            <td>{{ r.subject_type }}</td>
+            <td>{{ r.fullname }}</td>
+            <td>{{ r.id_number or '' }}</td>
+            <td>{{ r.birth_year or '' }}</td>
+            <td>{{ r.nationality or '' }}</td>
+            <td>{{ r.active_status }}</td>
+            <td>{{ r.auth_status }}</td>
+            <td>{{ r.created_by }}</td>
+            <td>{{ r.created_at }}</td>
+            <td>{{ r.authorized_by or '' }}</td>
+            <td>{{ r.authorized_at or '' }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</form>
+
+<div id="msg-no-result" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ no_result_message }}{% endif %}</div>
+
+<script>
+    function toggleAll(source) {
+        var boxes = document.querySelectorAll('input[name="selected_codes"]');
+        for (var i = 0; i < boxes.length; i++) { boxes[i].checked = source.checked; }
+    }
+    function confirmDelete() {
+        var checked = document.querySelectorAll('input[name="selected_codes"]:checked').length;
+        if (checked === 0) { return true; } // máy chủ sẽ báo "Vui lòng chọn ít nhất một bản ghi"
+        return confirm('Bạn có chắc chắn muốn xóa ' + checked + ' bản ghi đã chọn?');
+    }
+</script>
+{% endblock %}

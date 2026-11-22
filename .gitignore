@@ -1,0 +1,12 @@
+target/
+.idea/
+*.iml
+__pycache__/
+*.pyc
+*.db
+venv/
+.env
+*.docx
+*.pptx
+watchlist-demo/TOAN_BO_CODE.md
+watchlist-demo/SUB_LUONG_B_CODE.md

@@ -1,0 +1,180 @@
+templates\base.html:42:    <div class="brand" id="app-title">Watchlist AML Demo</div>
+templates\base.html:44:    <nav id="main-menu">
+templates\base.html:46:        <a id="nav-records" href="{{ url_for('records') }}">Nhập liệu</a>
+templates\base.html:48:        <a id="nav-records" href="{{ url_for('records') }}">Duyệt bản ghi</a>
+templates\base.html:50:        <a id="nav-watchlist" href="{{ url_for('watchlist') }}">Watchlist</a>
+templates\base.html:51:        <a id="nav-screening" href="{{ url_for('screening') }}">Sàng lọc khách hàng</a>
+templates\base.html:52:        <a id="nav-cases" href="{{ url_for('cases') }}">Danh sách Case</a>
+templates\base.html:53:        <a id="nav-screening-history" href="{{ url_for('screening_history') }}">Lịch sử sàng lọc</a>
+templates\base.html:54:        <a id="nav-mailbox" href="{{ url_for('mailbox') }}">Hộp thư giả lập</a>
+templates\base.html:57:        <span>Người dùng: <b id="current-user">{{ current_user }}</b> (<span id="current-role">{{ current_role_label }}</span>)</span>
+templates\base.html:58:        <form id="frm-logout" method="post" action="{{ url_for('logout') }}">
+templates\base.html:59:            <button type="submit" id="btn-logout" class="btn btn-light">Đăng xuất</button>
+templates\base.html:73:    <div id="msg-success" class="msg msg-success"{% if not ns.ok %} style="display:none"{% endif %}>{% for m in ns.ok %}<div>{{ m }}</div>{% endfor %}</div>
+templates\base.html:74:    <div id="msg-error" class="msg msg-error"{% if not ns.err %} style="display:none"{% endif %}>{% for m in ns.err %}<div>{{ m }}</div>{% endfor %}</div>
+templates\base.html:75:    <span id="saved-record-code" style="display:none">{{ ns.saved_code }}</span>
+templates\base.html:77:    <h1 id="page-title">{% block heading %}{% endblock %}</h1>
+templates\cases.html:6:    <form id="frm-case-filter" class="inline-form" method="get" action="{{ url_for('cases') }}">
+templates\cases.html:8:        <select id="filter_case_status" name="filter_case_status">
+templates\cases.html:14:        <button type="submit" id="btn-filter" class="btn">Lọc</button>
+templates\cases.html:15:        <a id="btn-clear-filter" class="btn btn-light" href="{{ url_for('cases') }}">Xóa điều kiện</a>
+templates\cases.html:18:<div class="toolbar"><span id="case-count">Tổng số: {{ rows|length }} case</span></div>
+templates\cases.html:19:<table id="tbl-cases">
+templates\cases.html:30:    <tbody id="tbl-cases-body">
+templates\cases.html:32:    <tr id="case-row-{{ c.case_code }}">
+templates\cases.html:33:        <td><a id="lnk-case-{{ c.case_code }}" href="{{ url_for('case_detail', code=c.case_code) }}">{{ c.case_code }}</a></td>
+templates\cases.html:43:<div id="msg-no-result" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ no_result_message }}{% endif %}</div>
+templates\case_detail.html:7:    <table id="tbl-case-info">
+templates\case_detail.html:8:        <tr><th>Mã case</th><td id="case-code">{{ case.case_code }}</td></tr>
+templates\case_detail.html:9:        <tr><th>Trạng thái</th><td id="case-status">{{ case.status }}</td></tr>
+templates\case_detail.html:10:        <tr><th>Quyết định mở CIF</th><td id="case-cif-decision">{{ cif }}</td></tr>
+templates\case_detail.html:11:        <tr><th>Mã sàng lọc</th><td id="case-screening-code">{{ case.screening_code }}</td></tr>
+templates\case_detail.html:12:        <tr><th>Loại khách hàng</th><td id="case-customer-type">{{ case.customer_type }}</td></tr>
+templates\case_detail.html:13:        <tr><th>Họ và tên khách hàng</th><td id="case-fullname">{{ case.fullname }}</td></tr>
+templates\case_detail.html:14:        <tr><th>Số CCCD</th><td id="case-id-number">{{ case.id_number or '' }}</td></tr>
+templates\case_detail.html:15:        <tr><th>Người tạo</th><td id="case-created-by">{{ case.created_by }}</td></tr>
+templates\case_detail.html:16:        <tr><th>Ngày tạo</th><td id="case-created-at">{{ case.created_at }}</td></tr>
+templates\case_detail.html:20:<form id="frm-case-action" method="post" action="{{ url_for('case_action', code=case.case_code) }}">
+templates\case_detail.html:23:        <table id="tbl-events">
+templates\case_detail.html:27:            <tbody id="tbl-events-body">
+templates\case_detail.html:29:            <tr id="event-row-{{ n }}">
+templates\case_detail.html:31:                <td id="event-code-{{ n }}">{{ e.record_code }}</td>
+templates\case_detail.html:32:                <td id="event-name-{{ n }}">{{ e.fullname }}</td>
+templates\case_detail.html:33:                <td id="event-idnum-{{ n }}">{{ e.id_number or '' }}</td>
+templates\case_detail.html:34:                <td id="event-match-{{ n }}">{{ e.match_reason }}</td>
+templates\case_detail.html:36:                    <select id="eval-{{ n }}" name="eval-{{ n }}"{% if not perms.maker_evaluate %} disabled{% endif %}>
+templates\case_detail.html:42:                <td><input type="text" id="reason-{{ n }}" name="reason-{{ n }}" value="{{ item.reason }}" style="width:260px"{% if not perms.maker_evaluate %} disabled{% endif %}></td>
+templates\case_detail.html:54:            <textarea id="supplement_note" name="supplement_note" rows="3">{{ supplement_note }}</textarea>
+templates\case_detail.html:60:            <textarea id="decision_reason" name="decision_reason" rows="3">{{ decision_reason }}</textarea>
+templates\case_detail.html:65:            <button type="submit" id="btn-propose" class="btn" name="action" value="propose">Đề xuất</button>
+templates\case_detail.html:68:            <button type="submit" id="btn-send-supplement" class="btn" name="action" value="send_supplement">Gửi bổ sung</button>
+templates\case_detail.html:71:            <button type="submit" id="btn-request-supplement" class="btn btn-light" name="action" value="request_supplement">Yêu cầu bổ sung</button>
+templates\case_detail.html:72:            <button type="submit" id="btn-close-false-hit" class="btn" name="action" value="close_false_hit">Đóng - Hit sai</button>
+templates\case_detail.html:73:            <button type="submit" id="btn-close-terminate" class="btn btn-danger" name="action" value="close_terminate">Đóng - Chấm dứt quan hệ</button>
+templates\case_detail.html:74:            <button type="submit" id="btn-close-maintain" class="btn btn-success" name="action" value="close_maintain">Đóng - Duy trì có kiểm soát</button>
+templates\case_detail.html:79:<p id="case-readonly-note" class="msg msg-info"{% if perms.maker_evaluate or perms.maker_supplement or perms.checker_decide %} style="display:none"{% endif %}>Bạn chỉ được xem case này ở trạng thái hiện tại.</p>
+templates\case_detail.html:83:    <table id="tbl-case-history">
+templates\case_detail.html:85:        <tbody id="tbl-case-history-body">
+templates\case_detail.html:87:        <tr id="history-row-{{ loop.index }}">
+templates\case_detail.html:97:<div class="toolbar"><a id="btn-back-cases" class="btn btn-light" href="{{ url_for('cases') }}">Quay lại Danh sách Case</a></div>
+templates\import.html:7:    <table id="tbl-import-columns">
+templates\import.html:11:        <a id="lnk-template-xlsx" href="{{ url_for('import_template_xlsx') }}">mau_import_watchlist.xlsx</a> |
+templates\import.html:12:        <a id="lnk-template-csv" href="{{ url_for('import_template_csv') }}">mau_import_watchlist.csv</a>
+templates\import.html:16:    <form id="frm-import" method="post" action="{{ url_for('record_import') }}" enctype="multipart/form-data">
+templates\import.html:19:            <input type="file" id="import_file" name="import_file">
+templates\import.html:22:            <button type="submit" id="btn-import-submit" class="btn">Import</button>
+templates\import.html:23:            <a id="btn-cancel" class="btn btn-light" href="{{ url_for('records') }}">Hủy</a>
+templates\import.html:30:    <table id="tbl-import-errors">
+templates\import.html:32:        <tbody id="tbl-import-errors-body">
+templates\import.html:34:        <tr id="import-error-{{ loop.index }}"><td>{{ line_no }}</td><td>{{ message }}</td></tr>
+templates\login.html:6:    <form id="frm-login" method="post" action="{{ url_for('login') }}">
+templates\login.html:9:            <input type="text" id="username" name="username" value="{{ username }}" autocomplete="off">
+templates\login.html:13:            <input type="password" id="password" name="password" value="">
+templates\login.html:15:        <button type="submit" id="btn-login" class="btn">Đăng nhập</button>
+templates\login.html:17:    <p id="login-hint">Tài khoản demo: <b>maker01</b> / 123456 (Maker), <b>checker01</b> / 123456 (Checker)</p>
+templates\mailbox.html:5:<p id="mailbox-note">Email chỉ được ghi vào cơ sở dữ liệu, không gửi ra ngoài. Bạn chỉ thấy email gửi cho tài khoản của mình.</p>
+templates\mailbox.html:6:<div class="toolbar"><span id="email-count">Tổng số: {{ rows|length }} email</span></div>
+templates\mailbox.html:7:<table id="tbl-emails">
+templates\mailbox.html:9:    <tbody id="tbl-emails-body">
+templates\mailbox.html:11:    <tr id="email-row-{{ m.id }}">
+templates\mailbox.html:20:<div id="msg-mailbox-empty" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ empty_message }}{% endif %}</div>
+templates\records.html:6:    <form id="frm-search" class="inline-form" method="get" action="{{ url_for('records') }}">
+templates\records.html:8:        <input type="text" id="search_fullname" name="search_fullname" value="{{ search_fullname }}">
+templates\records.html:10:        <input type="text" id="search_id_number" name="search_id_number" value="{{ search_id_number }}">
+templates\records.html:12:        <select id="filter_auth_status" name="filter_auth_status">
+templates\records.html:18:        <button type="submit" id="btn-search" class="btn">Tìm kiếm</button>
+templates\records.html:19:        <a id="btn-clear-search" class="btn btn-light" href="{{ url_for('records') }}">Xóa điều kiện</a>
+templates\records.html:23:<form id="frm-records" method="post" action="{{ url_for('records') }}">
+templates\records.html:26:        <a id="btn-add" class="btn" href="{{ url_for('record_new') }}">Thêm mới</a>
+templates\records.html:27:        <button type="submit" id="btn-edit" class="btn" formaction="{{ url_for('record_edit_selected') }}">Sửa</button>
+templates\records.html:28:        <button type="submit" id="btn-delete" class="btn btn-danger" formaction="{{ url_for('record_delete') }}" onclick="return confirmDelete();">Xóa</button>
+templates\records.html:29:        <a id="btn-import" class="btn btn-light" href="{{ url_for('record_import') }}">Import</a>
+templates\records.html:32:        <button type="submit" id="btn-authorize" class="btn btn-success" formaction="{{ url_for('record_authorize') }}">Authorize</button>
+templates\records.html:33:        <button type="submit" id="btn-reject" class="btn btn-danger" formaction="{{ url_for('record_reject') }}">Reject</button>
+templates\records.html:35:        <span id="record-count" style="align-self:center">Tổng số: {{ rows|length }} bản ghi</span>
+templates\records.html:38:    <table id="tbl-records">
+templates\records.html:41:            <th><input type="checkbox" id="chk-all" title="Chọn tất cả" onclick="toggleAll(this);"></th>
+templates\records.html:56:        <tbody id="tbl-records-body">
+templates\records.html:58:        <tr id="row-{{ r.record_code }}">
+templates\records.html:59:            <td><input type="checkbox" id="chk-{{ r.record_code }}" name="selected_codes" value="{{ r.record_code }}"></td>
+templates\records.html:60:            <td><a id="lnk-view-{{ r.record_code }}" href="{{ url_for('record_detail', code=r.record_code) }}">{{ r.record_code }}</a></td>
+templates\records.html:78:<div id="msg-no-result" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ no_result_message }}{% endif %}</div>
+templates\record_detail.html:6:    <table id="tbl-record-detail">
+templates\record_detail.html:7:        <tr><th>Mã bản ghi</th><td id="view-record_code">{{ row.record_code }}</td></tr>
+templates\record_detail.html:8:        <tr><th>Loại đối tượng</th><td id="view-subject_type">{{ row.subject_type }}</td></tr>
+templates\record_detail.html:9:        <tr><th>Họ và tên</th><td id="view-fullname">{{ row.fullname }}</td></tr>
+templates\record_detail.html:10:        <tr><th>Số CCCD</th><td id="view-id_number">{{ row.id_number or '' }}</td></tr>
+templates\record_detail.html:11:        <tr><th>Năm sinh</th><td id="view-birth_year">{{ row.birth_year or '' }}</td></tr>
+templates\record_detail.html:12:        <tr><th>Quốc tịch</th><td id="view-nationality">{{ row.nationality or '' }}</td></tr>
+templates\record_detail.html:13:        <tr><th>Lý do đưa vào danh sách</th><td id="view-reason">{{ row.reason or '' }}</td></tr>
+templates\record_detail.html:14:        <tr><th>Trạng thái hoạt động</th><td id="view-active_status">{{ row.active_status }}</td></tr>
+templates\record_detail.html:15:        <tr><th>Trạng thái duyệt</th><td id="view-auth_status">{{ row.auth_status }}</td></tr>
+templates\record_detail.html:16:        <tr><th>Người nhập</th><td id="view-created_by">{{ row.created_by }}</td></tr>
+templates\record_detail.html:17:        <tr><th>Ngày nhập</th><td id="view-created_at">{{ row.created_at }}</td></tr>
+templates\record_detail.html:18:        <tr><th>Người sửa</th><td id="view-updated_by">{{ row.updated_by or '' }}</td></tr>
+templates\record_detail.html:19:        <tr><th>Ngày sửa</th><td id="view-updated_at">{{ row.updated_at or '' }}</td></tr>
+templates\record_detail.html:20:        <tr><th>Người duyệt</th><td id="view-authorized_by">{{ row.authorized_by or '' }}</td></tr>
+templates\record_detail.html:21:        <tr><th>Ngày duyệt</th><td id="view-authorized_at">{{ row.authorized_at or '' }}</td></tr>
+templates\record_detail.html:22:        <tr><th>Đang có trong Watchlist</th><td id="view-in_watchlist">{% if in_watchlist %}Có{% else %}Không{% endif %}</td></tr>
+templates\record_detail.html:25:        <a id="btn-back" class="btn btn-light" href="{{ url_for('records') }}">Quay lại danh sách</a>
+templates\record_form.html:6:    <form id="frm-record" method="post" action="{% if mode == 'new' %}{{ url_for('record_new') }}{% else %}{{ url_for('record_edit', code=info.record_code) }}{% endif %}" novalidate>
+templates\record_form.html:9:            <input type="text" id="record_code" name="record_code" value="{{ info.record_code }}" placeholder="Tự sinh khi lưu" readonly>
+templates\record_form.html:13:            <select id="subject_type" name="subject_type">
+templates\record_form.html:19:            <span id="err-subject_type" class="field-error">{{ errors.get('subject_type', '') }}</span>
+templates\record_form.html:23:            <input type="text" id="fullname" name="fullname" value="{{ data.fullname }}">
+templates\record_form.html:24:            <span id="err-fullname" class="field-error">{{ errors.get('fullname', '') }}</span>
+templates\record_form.html:28:            <input type="text" id="id_number" name="id_number" value="{{ data.id_number }}">
+templates\record_form.html:29:            <span id="err-id_number" class="field-error">{{ errors.get('id_number', '') }}</span>
+templates\record_form.html:33:            <input type="text" id="birth_year" name="birth_year" value="{{ data.birth_year }}" placeholder="YYYY">
+templates\record_form.html:34:            <span id="err-birth_year" class="field-error">{{ errors.get('birth_year', '') }}</span>
+templates\record_form.html:38:            <input type="text" id="nationality" name="nationality" value="{{ data.nationality }}">
+templates\record_form.html:39:            <span id="err-nationality" class="field-error">{{ errors.get('nationality', '') }}</span>
+templates\record_form.html:43:            <textarea id="reason" name="reason" rows="3">{{ data.reason }}</textarea>
+templates\record_form.html:44:            <span id="err-reason" class="field-error">{{ errors.get('reason', '') }}</span>
+templates\record_form.html:48:            <select id="active_status" name="active_status">
+templates\record_form.html:53:            <span id="err-active_status" class="field-error">{{ errors.get('active_status', '') }}</span>
+templates\record_form.html:57:            <input type="text" id="auth_status" name="auth_status" value="{{ info.auth_status }}" readonly>
+templates\record_form.html:61:            <input type="text" id="created_by" name="created_by" value="{{ info.created_by }}" readonly>
+templates\record_form.html:65:            <input type="text" id="created_at" name="created_at" value="{{ info.created_at }}" placeholder="Tự sinh khi lưu" readonly>
+templates\record_form.html:68:            <button type="submit" id="btn-save" class="btn">Lưu</button>
+templates\record_form.html:69:            <a id="btn-cancel" class="btn btn-light" href="{{ url_for('records') }}">Hủy</a>
+templates\screening.html:7:    <form id="frm-screening" method="post" action="{{ url_for('screening') }}" novalidate>
+templates\screening.html:10:            <select id="customer_type" name="customer_type"{% if readonly %} disabled{% endif %}>
+templates\screening.html:16:            <span id="err-customer_type" class="field-error">{{ errors.get('customer_type', '') }}</span>
+templates\screening.html:20:            <input type="text" id="fullname" name="fullname" value="{{ data.fullname }}"{% if readonly %} disabled{% endif %}>
+templates\screening.html:21:            <span id="err-fullname" class="field-error">{{ errors.get('fullname', '') }}</span>
+templates\screening.html:25:            <input type="text" id="id_number" name="id_number" value="{{ data.id_number }}"{% if readonly %} disabled{% endif %}>
+templates\screening.html:26:            <span id="err-id_number" class="field-error">{{ errors.get('id_number', '') }}</span>
+templates\screening.html:29:            <button type="submit" id="btn-screen" class="btn"{% if readonly %} disabled{% endif %}>Sàng lọc</button>
+templates\screening.html:31:        <p id="screening-readonly-note" class="msg msg-info"{% if not readonly %} style="display:none"{% endif %}>Chỉ Maker được thực hiện sàng lọc. Checker chỉ xem.</p>
+templates\screening.html:35:<div id="screening-result" class="panel"{% if not result %} style="display:none"{% endif %}>
+templates\screening.html:37:    <table id="tbl-screening-result">
+templates\screening.html:38:        <tr><th>Mã sàng lọc</th><td id="result-screening-code">{{ result.sc.screening_code if result else '' }}</td></tr>
+templates\screening.html:39:        <tr><th>Khách hàng</th><td id="result-fullname">{{ result.sc.fullname if result else '' }}</td></tr>
+templates\screening.html:40:        <tr><th>Loại khách hàng</th><td id="result-customer-type">{{ result.sc.customer_type if result else '' }}</td></tr>
+templates\screening.html:41:        <tr><th>Số CCCD</th><td id="result-id-number">{{ (result.sc.id_number or '') if result else '' }}</td></tr>
+templates\screening.html:42:        <tr><th>Kết quả</th><td id="result-status">{{ result.sc.result if result else '' }}</td></tr>
+templates\screening.html:43:        <tr><th>Thông báo</th><td id="result-message">{% if result %}{% if result.sc.result == 'HIT' %}Phát hiện {{ result.events|length }} bản ghi trùng khớp với Watchlist{% else %}Không phát hiện trùng khớp với Watchlist{% endif %}{% endif %}</td></tr>
+templates\screening.html:44:        <tr><th>Mã case</th><td id="result-case-code">{% if result and result.sc.case_code %}<a id="lnk-result-case" href="{{ url_for('case_detail', code=result.sc.case_code) }}">{{ result.sc.case_code }}</a>{% endif %}</td></tr>
+templates\screening.html:45:        <tr><th>Quyết định mở CIF</th><td id="result-cif-decision">{{ result.cif if result else '' }}</td></tr>
+templates\screening.html:50:        <table id="tbl-screening-matches">
+templates\screening.html:52:            <tbody id="tbl-screening-matches-body">
+templates\screening.html:54:            <tr id="match-row-{{ e.record_code }}">
+templates\screening_history.html:6:    <form id="frm-search" class="inline-form" method="get" action="{{ url_for('screening_history') }}">
+templates\screening_history.html:8:        <input type="text" id="search_fullname" name="search_fullname" value="{{ search_fullname }}">
+templates\screening_history.html:9:        <button type="submit" id="btn-search" class="btn">Tìm kiếm</button>
+templates\screening_history.html:10:        <a id="btn-clear-search" class="btn btn-light" href="{{ url_for('screening_history') }}">Xóa điều kiện</a>
+templates\screening_history.html:13:<div class="toolbar"><span id="screening-count">Tổng số: {{ items|length }} lần sàng lọc</span></div>
+templates\screening_history.html:14:<table id="tbl-screenings">
+templates\screening_history.html:27:    <tbody id="tbl-screenings-body">
+templates\screening_history.html:29:    <tr id="sc-row-{{ r.screening_code }}">
+templates\screening_history.html:30:        <td><a id="lnk-sc-{{ r.screening_code }}" href="{{ url_for('screening', sc=r.screening_code) }}">{{ r.screening_code }}</a></td>
+templates\screening_history.html:34:        <td>{% if r.case_code %}<a id="lnk-sc-case-{{ r.screening_code }}" href="{{ url_for('case_detail', code=r.case_code) }}">{{ r.case_code }}</a>{% endif %}</td>
+templates\screening_history.html:42:<div id="msg-no-result" class="msg msg-info"{% if items %} style="display:none"{% endif %}>{% if not items %}{{ no_result_message }}{% endif %}</div>
+templates\watchlist.html:7:    <form id="frm-update-watchlist" method="post" action="{{ url_for('watchlist_update') }}" style="margin:0">
+templates\watchlist.html:8:        <button type="submit" id="btn-update-watchlist" class="btn btn-success">Cập nhật Watchlist</button>
+templates\watchlist.html:11:    <span id="watchlist-count" style="align-self:center">Tổng số: {{ rows|length }} bản ghi</span>
+templates\watchlist.html:14:<table id="tbl-watchlist">
+templates\watchlist.html:28:    <tbody id="tbl-watchlist-body">
+templates\watchlist.html:30:    <tr id="wl-row-{{ r.record_code }}">
+templates\watchlist.html:44:<div id="msg-watchlist-empty" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ empty_message }}{% endif %}</div>

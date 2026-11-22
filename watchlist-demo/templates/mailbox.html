@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Hộp thư giả lập{% endblock %}
+{% block heading %}Hộp thư giả lập - {{ current_user }}{% endblock %}
+{% block content %}
+<p id="mailbox-note">Email chỉ được ghi vào cơ sở dữ liệu, không gửi ra ngoài. Bạn chỉ thấy email gửi cho tài khoản của mình.</p>
+<div class="toolbar"><span id="email-count">Tổng số: {{ rows|length }} email</span></div>
+<table id="tbl-emails">
+    <thead><tr><th>Thời gian</th><th>Người nhận</th><th>Tiêu đề</th><th>Nội dung</th></tr></thead>
+    <tbody id="tbl-emails-body">
+    {% for m in rows %}
+    <tr id="email-row-{{ m.id }}">
+        <td>{{ m.sent_at }}</td>
+        <td>{{ m.recipient }}</td>
+        <td>{{ m.subject }}</td>
+        <td style="white-space: pre-line">{{ m.body }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div id="msg-mailbox-empty" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ empty_message }}{% endif %}</div>
+{% endblock %}

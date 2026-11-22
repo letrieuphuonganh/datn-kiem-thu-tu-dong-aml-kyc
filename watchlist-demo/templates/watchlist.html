@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Watchlist{% endblock %}
+{% block heading %}Watchlist{% endblock %}
+{% block content %}
+<div class="toolbar">
+    {% if current_role == 'checker' %}
+    <form id="frm-update-watchlist" method="post" action="{{ url_for('watchlist_update') }}" style="margin:0">
+        <button type="submit" id="btn-update-watchlist" class="btn btn-success">Cập nhật Watchlist</button>
+    </form>
+    {% endif %}
+    <span id="watchlist-count" style="align-self:center">Tổng số: {{ rows|length }} bản ghi</span>
+</div>
+
+<table id="tbl-watchlist">
+    <thead>
+    <tr>
+        <th>Mã bản ghi</th>
+        <th>Loại đối tượng</th>
+        <th>Họ và tên / Tên tổ chức</th>
+        <th>Số CCCD / Số ĐKKD (MST)</th>
+        <th>Năm sinh</th>
+        <th>Quốc tịch</th>
+        <th>Lý do đưa vào danh sách</th>
+        <th>Người cập nhật</th>
+        <th>Ngày cập nhật</th>
+    </tr>
+    </thead>
+    <tbody id="tbl-watchlist-body">
+    {% for r in rows %}
+    <tr id="wl-row-{{ r.record_code }}">
+        <td>{{ r.record_code }}</td>
+        <td>{{ r.subject_type }}</td>
+        <td>{{ r.fullname }}</td>
+        <td>{{ r.id_number or '' }}</td>
+        <td>{{ r.birth_year or '' }}</td>
+        <td>{{ r.nationality or '' }}</td>
+        <td>{{ r.reason or '' }}</td>
+        <td>{{ r.loaded_by }}</td>
+        <td>{{ r.loaded_at }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div id="msg-watchlist-empty" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ empty_message }}{% endif %}</div>
+{% endblock %}

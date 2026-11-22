@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Watchlist AML{% endblock %} - Watchlist AML Demo</title>
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+        header { background: #1f3b57; color: #fff; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+        header .brand { font-weight: bold; font-size: 18px; }
+        nav a { color: #fff; margin-right: 16px; text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        .user-box { display: flex; align-items: center; gap: 10px; }
+        .user-box form { margin: 0; }
+        main { padding: 20px; }
+        h1 { font-size: 22px; margin-top: 0; }
+        .msg { padding: 10px 14px; margin-bottom: 14px; border-radius: 4px; }
+        .msg-success { background: #e3f6e5; border: 1px solid #5cb85c; color: #1e6b21; }
+        .msg-error { background: #fdecea; border: 1px solid #d9534f; color: #8a1f1b; }
+        .btn[disabled] { opacity: .5; cursor: not-allowed; }
+        .msg-info { background: #eef3fb; border: 1px solid #7a9cc6; color: #24456e; }
+        .panel { background: #fff; border: 1px solid #d5dbe1; border-radius: 4px; padding: 16px; margin-bottom: 16px; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #ccd3da; padding: 6px 8px; text-align: left; font-size: 14px; vertical-align: top; }
+        th { background: #e7ecf1; }
+        .btn { display: inline-block; padding: 6px 14px; border: 1px solid #1f3b57; background: #1f3b57; color: #fff; border-radius: 3px; cursor: pointer; font-size: 14px; text-decoration: none; }
+        .btn-light { background: #fff; color: #1f3b57; }
+        .btn-danger { background: #c9302c; border-color: #c9302c; }
+        .btn-success { background: #2e7d32; border-color: #2e7d32; }
+        .toolbar { margin: 10px 0; display: flex; gap: 8px; flex-wrap: wrap; }
+        .form-row { margin-bottom: 10px; }
+        .form-row label { display: inline-block; width: 220px; font-weight: bold; vertical-align: top; }
+        .form-row input[type=text], .form-row input[type=password], .form-row select, .form-row textarea { width: 360px; padding: 5px; font-size: 14px; }
+        .form-row input[readonly] { background: #eee; }
+        .field-error { color: #c9302c; font-size: 13px; margin-left: 224px; display: block; }
+        .required { color: #c9302c; }
+        .inline-form label { margin-right: 4px; }
+        .inline-form input, .inline-form select { margin-right: 12px; padding: 4px; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="brand" id="app-title">Watchlist AML Demo</div>
+    {% if current_user %}
+    <nav id="main-menu">
+        {% if current_role == 'maker' %}
+        <a id="nav-records" href="{{ url_for('records') }}">Nhập liệu</a>
+        {% else %}
+        <a id="nav-records" href="{{ url_for('records') }}">Duyệt bản ghi</a>
+        {% endif %}
+        <a id="nav-watchlist" href="{{ url_for('watchlist') }}">Watchlist</a>
+        <a id="nav-screening" href="{{ url_for('screening') }}">Sàng lọc khách hàng</a>
+        <a id="nav-cases" href="{{ url_for('cases') }}">Danh sách Case</a>
+        <a id="nav-screening-history" href="{{ url_for('screening_history') }}">Lịch sử sàng lọc</a>
+        <a id="nav-mailbox" href="{{ url_for('mailbox') }}">Hộp thư giả lập</a>
+    </nav>
+    <div class="user-box">
+        <span>Người dùng: <b id="current-user">{{ current_user }}</b> (<span id="current-role">{{ current_role_label }}</span>)</span>
+        <form id="frm-logout" method="post" action="{{ url_for('logout') }}">
+            <button type="submit" id="btn-logout" class="btn btn-light">Đăng xuất</button>
+        </form>
+    </div>
+    {% endif %}
+</header>
+<main>
+    {% set ns = namespace(ok=[], err=[], saved_code='') %}
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        {% if category == 'success' %}{% set ns.ok = ns.ok + [message] %}
+        {% elif category == 'saved_code' %}{% set ns.saved_code = message %}
+        {% else %}{% set ns.err = ns.err + [message] %}{% endif %}
+    {% endfor %}
+    {% if page_errors %}{% set ns.err = ns.err + page_errors %}{% endif %}
+
+    <div id="msg-success" class="msg msg-success"{% if not ns.ok %} style="display:none"{% endif %}>{% for m in ns.ok %}<div>{{ m }}</div>{% endfor %}</div>
+    <div id="msg-error" class="msg msg-error"{% if not ns.err %} style="display:none"{% endif %}>{% for m in ns.err %}<div>{{ m }}</div>{% endfor %}</div>
+    <span id="saved-record-code" style="display:none">{{ ns.saved_code }}</span>
+
+    <h1 id="page-title">{% block heading %}{% endblock %}</h1>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

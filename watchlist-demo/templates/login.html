@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập{% endblock %}
+{% block heading %}Đăng nhập{% endblock %}
+{% block content %}
+<div class="panel">
+    <form id="frm-login" method="post" action="{{ url_for('login') }}">
+        <div class="form-row">
+            <label for="username">Tên đăng nhập</label>
+            <input type="text" id="username" name="username" value="{{ username }}" autocomplete="off">
+        </div>
+        <div class="form-row">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" value="">
+        </div>
+        <button type="submit" id="btn-login" class="btn">Đăng nhập</button>
+    </form>
+    <p id="login-hint">Tài khoản demo: <b>maker01</b> / 123456 (Maker), <b>checker01</b> / 123456 (Checker)</p>
+</div>
+{% endblock %}

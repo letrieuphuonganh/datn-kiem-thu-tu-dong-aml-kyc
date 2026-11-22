@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Danh sách Case{% endblock %}
+{% block heading %}Danh sách Case{% endblock %}
+{% block content %}
+<div class="panel">
+    <form id="frm-case-filter" class="inline-form" method="get" action="{{ url_for('cases') }}">
+        <label for="filter_case_status">Trạng thái</label>
+        <select id="filter_case_status" name="filter_case_status">
+            <option value=""{% if filter_case_status == '' %} selected{% endif %}>-- Tất cả --</option>
+            {% for s in case_statuses %}
+            <option value="{{ s }}"{% if filter_case_status == s %} selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" id="btn-filter" class="btn">Lọc</button>
+        <a id="btn-clear-filter" class="btn btn-light" href="{{ url_for('cases') }}">Xóa điều kiện</a>
+    </form>
+</div>
+<div class="toolbar"><span id="case-count">Tổng số: {{ rows|length }} case</span></div>
+<table id="tbl-cases">
+    <thead>
+    <tr>
+        <th>Mã case</th>
+        <th>Khách hàng (Họ và tên / Tên tổ chức)</th>
+        <th>Loại khách hàng</th>
+        <th>Số Event</th>
+        <th>Trạng thái</th>
+        <th>Ngày tạo</th>
+    </tr>
+    </thead>
+    <tbody id="tbl-cases-body">
+    {% for c in rows %}
+    <tr id="case-row-{{ c.case_code }}">
+        <td><a id="lnk-case-{{ c.case_code }}" href="{{ url_for('case_detail', code=c.case_code) }}">{{ c.case_code }}</a></td>
+        <td>{{ c.fullname }}</td>
+        <td>{{ c.customer_type }}</td>
+        <td>{{ c.event_count }}</td>
+        <td>{{ c.status }}</td>
+        <td>{{ c.created_at }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div id="msg-no-result" class="msg msg-info"{% if rows %} style="display:none"{% endif %}>{% if not rows %}{{ no_result_message }}{% endif %}</div>
+{% endblock %}

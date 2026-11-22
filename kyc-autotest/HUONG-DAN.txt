@@ -1,0 +1,12 @@
+CHAY TEST
+1. Bat web demo (python app.py), mac dinh http://127.0.0.1:5000
+2. IntelliJ: chuot phai testng.xml -> Run. Hoac go: mvn test
+3. Ket qua: target/surefire-reports (HTML), target/timing.csv (thoi gian tung test), target/screenshots (anh khi that bai)
+Tuy chon: -DbaseUrl=http://127.0.0.1:5000  -Dheadless=true
+
+MO RONG: KIEM SOAT SANG LOC LAP LAI (K1, K2) VA DONG HO GIA LAP
+- Can dung app.py ban moi (co /set-date, K1, K2). Tat web cu va chay lai: python app.py
+- testng.xml co them nhom MoRong_KiemSoatLapLai (tests.RepeatControlTest: 5 script, 8 luot chay).
+- Tong cong chay duoc 11 script, 30 luot (22 luot co so + 8 luot mo rong).
+- Muon chay rieng phan mo rong: IntelliJ chuot phai tests/RepeatControlTest -> Run.
+
